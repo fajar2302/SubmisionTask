@@ -12,15 +12,15 @@ func main() {
 	fmt.Println("Masukkan Nilai: ")
 	fmt.Scanln(&nilai)
 
-	if (nilai >= 80 && nilai <= 100){
+	if nilai >= 80 && nilai <= 100{
 		predikat = "A"
-	} else if (nilai >= 65 && nilai < 80 ) {
+	} else if nilai >= 65 && nilai < 80  {
 		predikat = "B+"	
-	} else if (nilai >= 50 && nilai < 65) {
+	} else if nilai >= 50 && nilai < 65 {
 		predikat = "B"
-	} else if (nilai >= 35 && nilai < 50) {
+	} else if nilai >= 35 && nilai < 50 {
 		predikat = "C"
-	} else if (nilai >= 0 && nilai < 35) {
+	} else if nilai >= 0 && nilai < 35 {
 		predikat = "D"
 	}
 
