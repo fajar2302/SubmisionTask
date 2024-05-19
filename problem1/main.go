@@ -4,7 +4,11 @@ import "fmt"
 
 func main() {
 	var nilai float32
+	var nama string
 	var predikat string
+	fmt.Println("Masukkan Nama: ")
+	fmt.Scanln(&nama)
+
 	fmt.Println("Masukkan Nilai: ")
 	fmt.Scanln(&nilai)
 
@@ -20,6 +24,6 @@ func main() {
 		predikat = "D"
 	}
 
-	fmt.Println("Predikatnnya: ", predikat)
+	fmt.Println("Predikat nilai ",nama," adalah ", predikat)
 
 }
