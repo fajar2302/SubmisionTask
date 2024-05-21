@@ -11,7 +11,7 @@ func main() {
 	if angka <= 1 {
 		isPrime = false
 	} else {
-		for i := 2; i*i <= angka; i++ {
+		for i := 2; i < angka; i++ {
 			if angka%i == 0 {
 				isPrime = false
 				break
