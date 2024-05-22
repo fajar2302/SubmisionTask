@@ -6,7 +6,11 @@ func main() {
     var n int
     fmt.Print("Masukkan jumlah baris/kolom: ")
     fmt.Scanln(&n)
-	var output string
+	println(DrawXYZ(n))
+}
+
+func DrawXYZ(n int) string {
+	var output, hasil string
     // Menggunakan dua loop bersarang untuk mencetak angka dari 1 hingga n * n
     for i := 0; i < n; i++ {
         for j := 0; j < n; j++ {
@@ -19,9 +23,9 @@ func main() {
             } else {
                 output = "Y"
             }
-
-            fmt.Printf("%s\t", output)
+			hasil += output + "\t"
         }
-        fmt.Println() // Pindah ke baris berikutnya setelah mencetak semua angka pada baris tertentu
+        hasil += "\n"
     }
+	return hasil
 }
