@@ -1,22 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
-	var n int
-	fmt.Print("Masukkan tinggi piramida: ")
-	fmt.Scanln(&n)
+	fmt.Printf("%s\n", compare("AKA", "AKASHI"))
+}
 
-	for i := 0; i <= n; i++ {
-		// Membuat spasi sebelum bintang
-		for j := 0; j <= n-i; j++ {
-			fmt.Print(" ")
-		}
-		// Membuat bintang dengan nilai berurutan
-		for j := 0; j < i; j++ {
-			fmt.Print("* ")
-		}
-		fmt.Println()
+func compare(kata1, kata2 string) string {
+	position := make(map[rune]int)
+	for i, char := range kata1 {
+		position[char] = i
 	}
 
+	var commonLetters []rune
+	for _, char := range kata2 {
+		if _, exists := position[char]; exists {
+			commonLetters = append(commonLetters, char)
+		}
+	}
+
+	return string(commonLetters)
 }
