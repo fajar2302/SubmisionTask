@@ -49,7 +49,7 @@ func (s *Student) Max() (max int, name string) {
 func main() {
     var students Student
 
-    for i := 0; i < 5; i++ {
+    for i := 0; i < 6; i++ {
         var name string
         var score int
 
