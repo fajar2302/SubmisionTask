@@ -1,19 +1,22 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Name      string
-	Password  string
-	Email     string
-	Phone     string
-	BirthDate time.Time `gorm:"type:date"`
-	Todos     []Todo    `gorm:"foreignKey:Owner"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Phone    string `json:"hp"`
+	Alamats  string
+}
+
+type Alamat struct {
+	gorm.Model
+	Jalan   string
+	UsersID uint
 }
 
 type UserModel struct {
@@ -28,7 +31,7 @@ func NewUserModel(connection *gorm.DB) *UserModel {
 
 func (um *UserModel) Login(email string, password string) (User, error) {
 	var result User
-	err := um.db.Unscoped().Where("email = ? AND password = ?", email, password).First(&result).Error
+	err := um.db.Where("email = ? AND password = ?", email, password).First(&result).Error
 	if err != nil {
 		return User{}, err
 	}
