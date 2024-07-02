@@ -19,6 +19,7 @@ func main() {
 
 	cfg := configs.ImportSetting()
 	db, _ := configs.ConnectDB(cfg)
+	db.AutoMigrate(&models.User{})
 	um := models.NewUserModel(db)
 	uc := users.NewUserController(um)
 	// Register

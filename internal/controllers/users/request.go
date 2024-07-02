@@ -25,5 +25,6 @@ func ToModelUsers(r RegisterRequest) models.User {
 		Password: r.Password,
 		Email:    r.Email,
 		Phone:    r.Phone,
+	
 	}
 }
