@@ -29,10 +29,10 @@ func main() {
 	// Register
 	e.POST("/users", uc.Register)
 	e.POST("/login", uc.Login)
-	e.POST("/addtodo", tc.CreateTodo)
-	e.POST("/gettodo", tc.GetAllTodo)
-	e.POST("/updatetodo", tc.UpdateTodo)
-	e.POST("/deletetodo", tc.DeleteTodo)
+	e.POST("/addtodo/:IDuser", tc.CreateTodo)
+	e.POST("/gettodo/:IDuser", tc.GetAllTodo)
+	e.POST("/updatetodo/:IDuser/:todoId", tc.UpdateTodo)
+	e.POST("/deletetodo/:IDuser/:todoId", tc.DeleteTodo)
 
 	// Login
 	// Tampilkan semua data

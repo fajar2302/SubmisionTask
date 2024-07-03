@@ -4,41 +4,43 @@ import "gorm.io/gorm"
 
 type Todo struct {
     gorm.Model
-    Title  string
-    UserID uint
+    Title  string `json:"title"`
+    UserID uint   `json:"user_id"`
 }
 
 type TodoModel struct {
     db *gorm.DB
 }
 
-func NewTodoModel(connection *gorm.DB) *TodoModel {
-    return &TodoModel{
-        db: connection,
-    }
+func NewTodoModel(db *gorm.DB) *TodoModel {
+    return &TodoModel{db: db}
 }
 
-func (tm *TodoModel) InsertTodo(newData Todo) error {
-    qry := tm.db.Create(&newData)
-    if err := qry.Error; err != nil {
+func (tm *TodoModel) InsertTodo(todo Todo) error {
+    if err := tm.db.Create(&todo).Error; err != nil {
         return err
     }
     return nil
 }
 
-func (tm *TodoModel) GetAllTodo() ([]Todo, error) {
+func (tm *TodoModel) GetAllTodoByUserID(userID uint) ([]Todo, error) {
     var todos []Todo
-    if err := tm.db.Find(&todos).Error; err != nil {
+    if err := tm.db.Where("user_id = ?", userID).Find(&todos).Error; err != nil {
         return nil, err
     }
     return todos, nil
 }
 
-func (tm *TodoModel) Update(userID uint, newData Todo) error {
-    // Cari entri to-do berdasarkan userID
+func (tm *TodoModel) Update(todoID, userID uint, newData Todo) error {
+    // Cari entri to-do berdasarkan todoID dan userID
     todo := Todo{}
-    if err := tm.db.First(&todo, userID).Error; err != nil {
+    if err := tm.db.First(&todo, todoID).Error; err != nil {
         return err
+    }
+
+    // Periksa apakah userID sesuai dengan userID pada todo
+    if todo.UserID != userID {
+        return gorm.ErrRecordNotFound
     }
 
     // Update data to-do
@@ -52,9 +54,9 @@ func (tm *TodoModel) Update(userID uint, newData Todo) error {
     return nil
 }
 
-func (tm *TodoModel) Delete(userID uint) error {
-    // Hapus entri to-do berdasarkan userID
-    if err := tm.db.Delete(&Todo{}, userID).Error; err != nil {
+func (tm *TodoModel) Delete(todoID, userID uint) error {
+    // Hapus entri to-do berdasarkan todoID dan userID
+    if err := tm.db.Where("id = ? AND user_id = ?", todoID, userID).Delete(&Todo{}).Error; err != nil {
         return err
     }
     return nil

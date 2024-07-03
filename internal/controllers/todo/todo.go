@@ -21,27 +21,33 @@ func NewTodoController(todoModel *models.TodoModel) *TodoController {
 }
 
 func (tc *TodoController) CreateTodo(c echo.Context) error {
+    userID, _ := strconv.ParseUint(c.Param("userID"), 10, 64)
+
+
     var reqBody CreateTodoRequest
     if err := c.Bind(&reqBody); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
+        return c.JSON(500, helper.ResponseFormat(500, "input error", nil))
     }
 
     todo := models.Todo{
         Title:  reqBody.Title,
-        UserID: reqBody.UserID,
+        UserID: uint(userID), // Assign userID to the Todo struct
     }
 
     if err := tc.todoModel.InsertTodo(todo); err != nil {
-        return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
+        return c.JSON(500, helper.ResponseFormat(500, "insert error", nil))
     }
 
-    return c.JSON(http.StatusCreated, map[string]string{"message": "Todo created successfully"})
+    return c.JSON(201, helper.ResponseFormat(201, "success insert data", nil))
 }
 
 func (tc *TodoController) GetAllTodo(c echo.Context) error {
-    todos, err := tc.todoModel.GetAllTodo()
+    userID, _ := strconv.ParseUint(c.Param("userID"), 10, 64)
+
+    todos, err := tc.todoModel.GetAllTodoByUserID(uint(userID))
     if err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch todos"})
+        return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
+
     }
 
     var response []TodoResponse
@@ -53,36 +59,37 @@ func (tc *TodoController) GetAllTodo(c echo.Context) error {
 }
 
 func (tc *TodoController) UpdateTodo(c echo.Context) error {
-    userID, err := strconv.ParseUint(c.Param("userID"), 10, 64)
-    if err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid user ID"})
-    }
+    userID, _ := strconv.ParseUint(c.Param("userID"), 10, 64)
+    todoID, _ := strconv.ParseUint(c.Param("todoID"), 10, 64)
 
     var reqBody UpdateTodoRequest
     if err := c.Bind(&reqBody); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
+        return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
+
     }
 
     newData := models.Todo{
         Title: reqBody.Title,
     }
 
-    if err := tc.todoModel.Update(uint(userID), newData); err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update todo"})
+    if err := tc.todoModel.Update(uint(todoID), uint(userID), newData); err != nil {
+        return c.JSON(500, helper.ResponseFormat(500, "update error", nil))
+
     }
 
-    return c.JSON(http.StatusOK, map[string]string{"message": "Todo updated successfully"})
+    return c.JSON(201, helper.ResponseFormat(201, "todo updated successfully", nil))
 }
 
 func (tc *TodoController) DeleteTodo(c echo.Context) error {
-    userID, err := strconv.ParseUint(c.Param("userID"), 10, 64)
-    if err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid user ID"})
+    userID, _ := strconv.ParseUint(c.Param("userID"), 10, 64)
+    
+
+    todoID, _ := strconv.ParseUint(c.Param("todoID"), 10, 64)
+   
+
+    if err := tc.todoModel.Delete(uint(todoID), uint(userID)); err != nil {
+        return c.JSON(400, helper.ResponseFormat(400, "failed deleted todo", nil))
     }
 
-    if err := tc.todoModel.Delete(uint(userID)); err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to delete todo"})
-    }
-
-    return c.JSON(http.StatusOK, map[string]string{"message": "Todo deleted successfully"})
+    return c.JSON(201, helper.ResponseFormat(201, "success deleted Todo", nil))
 }
