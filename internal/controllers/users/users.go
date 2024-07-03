@@ -3,7 +3,8 @@ package users
 import (
 	"apibe23/internal/helper"
 	"apibe23/internal/models"
-	"fmt"
+
+	// "fmt"
 
 	"github.com/labstack/echo/v4"
 )
@@ -21,7 +22,7 @@ func NewUserController(m *models.UserModel) *UserController {
 func (uc *UserController) Register(c echo.Context) error {
 	var input RegisterRequest
 	err := c.Bind(&input)
-	fmt.Println(input.Address)
+	// fmt.Println(input.Address)
 	if err != nil {
 		return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
 	}

@@ -12,11 +12,6 @@ type RegisterRequest struct {
 	Password string          `json:"password"`
 	Email    string          `json:"email"`
 	Phone    string          `json:"hp"`
-	Address  []AlamatRequest `json:"address"`
-}
-
-type AlamatRequest struct {
-	Alamat string `json:"alamat"`
 }
 
 func ToModelUsers(r RegisterRequest) models.User {
