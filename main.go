@@ -2,6 +2,7 @@ package main
 
 import (
 	"apibe23/configs"
+	"apibe23/internal/controllers/todo"
 	"apibe23/internal/controllers/users"
 	"apibe23/internal/models"
 
@@ -24,11 +25,15 @@ func main() {
 	uc := users.NewUserController(um)
 
 	tm := models.NewTodoModel(db)
-	tc := models.NewTodoController(tm)
+	tc := todo.NewTodoController(tm)
 	// Register
 	e.POST("/users", uc.Register)
 	e.POST("/login", uc.Login)
-	e.POST("/login", tc.CreateTodo)
+	e.POST("/addtodo", tc.CreateTodo)
+	e.POST("/gettodo", tc.GetAllTodo)
+	e.POST("/updatetodo", tc.UpdateTodo)
+	e.POST("/deletetodo", tc.DeleteTodo)
+
 	// Login
 	// Tampilkan semua data
 	// e.GET("/users", GetAllUsers)
