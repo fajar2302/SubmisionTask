@@ -6,6 +6,8 @@ import (
 	"apibe23/internal/controllers/users"
 	"apibe23/internal/models"
 
+	"github.com/golang-jwt/jwt/v5"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,13 +28,55 @@ func main() {
 
 	tm := models.NewTodoModel(db)
 	tc := todo.NewTodoController(tm)
+
+	// t := e.Group("/todos")
+	// t.Use(echojwt.WithConfig(
+	// 	echojwt.Config{
+	// 		SigningKey:    []byte("passkeyJWT"),
+	// 		SigningMethod: jwt.SigningMethodHS256.Name,
+	// 	},
+	// ))
+
 	// Register
 	e.POST("/users", uc.Register)
 	e.POST("/login", uc.Login)
-	e.POST("/addtodo/:IDuser", tc.CreateTodo)
-	e.POST("/gettodo/:IDuser", tc.GetAllTodo)
-	e.POST("/updatetodo/:IDuser/:todoId", tc.UpdateTodo)
-	e.POST("/deletetodo/:IDuser/:todoId", tc.DeleteTodo)
+
+	e.POST("/addTodo", tc.CreateTodo, echojwt.WithConfig(
+		echojwt.Config{
+			SigningKey:    []byte("passkeyJWT"),
+			SigningMethod: jwt.SigningMethodHS256.Name,
+		},
+	))
+	e.GET("/showTodo", tc.GetAllTodo, echojwt.WithConfig(
+		echojwt.Config{
+			SigningKey:    []byte("passkeyJWT"),
+			SigningMethod: jwt.SigningMethodHS256.Name,
+		},
+	))
+
+	e.POST("/updatetodo/:todoId", tc.UpdateTodo, echojwt.WithConfig(
+		echojwt.Config{
+			SigningKey:    []byte("passkeyJWT"),
+			SigningMethod: jwt.SigningMethodHS256.Name,
+		},
+	))
+	e.POST("/deletetodo/:todoId", tc.DeleteTodo, echojwt.WithConfig(
+		echojwt.Config{
+			SigningKey:    []byte("passkeyJWT"),
+			SigningMethod: jwt.SigningMethodHS256.Name,
+		},
+	))
+
+	// t := e.Group("/todos")
+	// t.Use(echojwt.WithConfig(
+	// 	echojwt.Config{
+	// 		SigningKey:    []byte("passkeyJWT"),
+	// 		SigningMethod: jwt.SigningMethodHS256.Name,
+	// 	},
+	// ))
+	// t.PO("", tc.ShowMyTodo())
+	// t.POST("", tc.CreateTodo())
+
 
 	// Login
 	// Tampilkan semua data

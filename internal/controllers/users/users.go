@@ -3,6 +3,7 @@ package users
 import (
 	"apibe23/internal/helper"
 	"apibe23/internal/models"
+	"apibe23/internal/utils"
 
 	// "fmt"
 
@@ -40,12 +41,14 @@ func (uc *UserController) Login(c echo.Context) error {
 		return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
 	}
 	result, err := uc.model.Login(input.Email, input.Password)
+	
 
+	token, err := utils.GenerateToken(result.ID)
 	if err != nil {
-		return c.JSON(500, helper.ResponseFormat(500, "server error", nil))
+		return c.JSON(500, helper.ResponseFormat(500, "privacy error", nil))
 	}
 
-	return c.JSON(200, helper.ResponseFormat(200, "success login", ToLoginReponse(result)))
+	return c.JSON(200, helper.ResponseFormat(200, "success login", ToLoginReponse(result, token)))
 }
 
 // func GetAllUsers(c echo.Context) error {
