@@ -70,6 +70,7 @@ func (tc *TodoController) GetAllTodo(c echo.Context) error {
 }
 
 func (tc *TodoController) UpdateTodo(c echo.Context) error {
+	
 	// Mendapatkan token dari context
     user := c.Get("user").(*jwt.Token)
 

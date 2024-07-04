@@ -54,13 +54,13 @@ func main() {
 		},
 	))
 
-	e.POST("/updatetodo/:todoId", tc.UpdateTodo, echojwt.WithConfig(
+	e.POST("/updatetodo/:todoID", tc.UpdateTodo, echojwt.WithConfig(
 		echojwt.Config{
 			SigningKey:    []byte("passkeyJWT"),
 			SigningMethod: jwt.SigningMethodHS256.Name,
 		},
 	))
-	e.POST("/deletetodo/:todoId", tc.DeleteTodo, echojwt.WithConfig(
+	e.POST("/deletetodo/:todoID", tc.DeleteTodo, echojwt.WithConfig(
 		echojwt.Config{
 			SigningKey:    []byte("passkeyJWT"),
 			SigningMethod: jwt.SigningMethodHS256.Name,
