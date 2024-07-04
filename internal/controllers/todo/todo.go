@@ -37,7 +37,12 @@ func (tc *TodoController) CreateTodo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFormat(http.StatusBadRequest, "Invalid request body", nil))
 	}
 
-	if err := tc.todoModel.InsertTodo(ToModelTodo(CreateTodoRequest{}, userID)); err != nil {
+	todo := models.Todo{
+		Title:  reqBody.Title,
+		UserID: uint(userID), // Assign userID to the Todo struct
+	}
+
+	if err := tc.todoModel.InsertTodo(todo); err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFormat(http.StatusInternalServerError, "Failed to create todo", nil))
 	}
 
