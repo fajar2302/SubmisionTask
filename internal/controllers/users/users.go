@@ -4,6 +4,7 @@ import (
 	"apibe23/internal/helper"
 	"apibe23/internal/models"
 	"apibe23/internal/utils"
+	"net/http"
 
 	// "fmt"
 
@@ -22,11 +23,22 @@ func NewUserController(m *models.UserModel) *UserController {
 
 func (uc *UserController) Register(c echo.Context) error {
 	var input RegisterRequest
+	
 	err := c.Bind(&input)
 	// fmt.Println(input.Address)
 	if err != nil {
 		return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
 	}
+
+	processPw, err := utils.GeneratePassword(input.Password)
+
+	if err != nil {
+		return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
+	}
+
+	input.Password = string(processPw)
+
+
 	_, err = uc.model.Register(ToModelUsers(input))
 	if err != nil {
 		return c.JSON(500, helper.ResponseFormat(500, "server error", nil))
@@ -40,9 +52,15 @@ func (uc *UserController) Login(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, helper.ResponseFormat(400, "input error", nil))
 	}
-	result, err := uc.model.Login(input.Email, input.Password)
-	
+	result, err := uc.model.Login(input.Email)
+	if err != nil {
+		return c.JSON(500, helper.ResponseFormat(500, "server error", nil))
+	}
 
+	err = utils.CheckPassword([]byte(input.Password), []byte(result.Password))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, helper.ResponseFormat(http.StatusUnauthorized, "invalid credentials", nil))
+	}
 	token, err := utils.GenerateToken(result.ID)
 	if err != nil {
 		return c.JSON(500, helper.ResponseFormat(500, "privacy error", nil))
